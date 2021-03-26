@@ -252,11 +252,11 @@ abstract class Component
         if (defined('STDOUT')) {
             $_SERVER['REQUEST_METHOD'] = 'CLI';
         }
-        $url = explode('/', trim(explode('?', defined('STDOUT') ? (isset($argv[1]) ? $argv[1] : '') : $_SERVER['REQUEST_URI'], 2)[0], '/'));
+        $url = trim(explode('?', defined('STDOUT') ? (isset($argv[1]) ? $argv[1] : '') : $_SERVER['REQUEST_URI'], 2)[0], '/');
         if ($this->getConfig('app.default.base', '')) {
-            $url = str_replace([$this->getConfig('app.default.base', '') . '/', $this->getConfig('app.default.base', '')], '', implode('/', $url));
+            $url = str_replace([$this->getConfig('app.default.base', '') . '/', $this->getConfig('app.default.base', '')], '', $url);
         }
-        $url = explode('/', $this->trigger('beforeRouting', $url));
+        $url = explode('/', trim($this->trigger('beforeRouting', $url), '/'));
 
         self::$_route['controller'] = empty($url[0]) ? $this->getConfig('app.default.controller', 'home') : Helper::slugToCamel($url[0]);
         self::$_route['action'] = isset($url[1]) ? Helper::slugToCamel($url[1]) : $this->getConfig('app.default.action', 'main');
