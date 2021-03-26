@@ -1,0 +1,13 @@
+{
+    "name": "rashid2538/darkish",
+    "description": "A framework built in PHP",
+    "require": {
+        "php": "5.6.40",
+        "symfony/http-foundation": "3.4.44"
+    },
+    "autoload": {
+        "psr-4": {
+            "Darkish\\": "src/"
+        }
+    }
+}
