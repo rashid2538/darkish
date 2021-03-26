@@ -101,7 +101,7 @@
 			return $this->_connection->quote( $str );
 		}
 
-		function select( $sql, $params = [], $name = null, $totalCount, $quantity, $page ) {
+		function select( $sql, $params = [], $name = null, $totalCount = null, $quantity = 10, $page = 1 ) {
 			return strtolower( substr( trim( $sql ), 0, 7 ) ) == 'select ' ? new Result( $name, $this->query( $sql, $params ), $this, $totalCount, $quantity, $page ) : null;
 		}
 
