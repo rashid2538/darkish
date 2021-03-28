@@ -35,7 +35,7 @@
 			$this->_name = $name;
 			$this->_action = $action;
 			$this->_viewBag = new \StdClass();
-			$this->path = $this->getApplication()->getConfig( 'app.default.views_dir', 'views/' );
+			$this->path = $this->getApplication()->getConfig( 'app.view.directory', 'views/' );
 			$this->debug( 'Checking authorization', $this->getApplication()->isAuthorized() );
 			if( $this->_authorize ) {
 				$this->debug( 'checking authorization', $this->getApplication()->isAuthorized() );
@@ -59,7 +59,7 @@
 				$this->_action = $options[ 'view' ];
 			}
 			$this->_action = strtolower( $this->_action );
-			$this->template = $this->getApplication()->getConfig( 'app.default.views_dir', 'views/' ) . $this->_name . '/' . $this->_action . '.' . $this->getConfig( 'view/extension', 'html' );
+			$this->template = $this->getApplication()->getConfig( 'app.view.directory', 'views/' ) . $this->_name . '/' . $this->_action . '.' . $this->getConfig( 'app.view.extension', 'html' );
 			$this->model = $model;
 			$this->html = new HTML( $model );
 			$renderer = $this->trigger( 'getRenderer' );
@@ -69,8 +69,8 @@
 
 		private function _render() {
 			ob_start();
-			$this->template = $this->getApplication()->getConfig( 'app.default.views_dir', 'views/' ) . $this->_name . '/' . $this->_action . '.' . $this->getConfig( 'view/extension', 'html' );
-			include $this->_layout ? $this->getApplication()->getConfig( 'app.default.views_dir', 'views/' ) . $this->_layout . '.' . $this->getConfig( 'view/extension', 'html' ) : $this->getApplication()->getConfig( 'app.default.views_dir', 'views/' ) . $this->_name . '/' . $this->_action . '.' . $this->getConfig( 'view/extension', 'html' );
+			$this->template = $this->getApplication()->getConfig( 'app.view.directory', 'views/' ) . $this->_name . '/' . $this->_action . '.' . $this->getConfig( 'app.view.extension', 'html' );
+			include $this->_layout ? $this->getApplication()->getConfig( 'app.view.directory', 'views/' ) . $this->_layout . '.' . $this->getConfig( 'app.view.extension', 'html' ) : $this->getApplication()->getConfig( 'app.view.directory', 'views/' ) . $this->_name . '/' . $this->_action . '.' . $this->getConfig( 'app.view.extension', 'html' );
 			$page = ob_get_contents();
 			ob_end_clean();
 			return $page;

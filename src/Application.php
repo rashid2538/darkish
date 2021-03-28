@@ -62,9 +62,9 @@ class Application extends Component
         if (class_exists($controllerClass)) {
             $controller = new $controllerClass(parent::$_route['controller'], parent::$_route['action']);
         } else {
-            $errorControllerClass = $this->getConfig('app.default.namespace') . 'Controller\\' . ucfirst($this->getConfig('app.default.error_contrller', 'error'));
+            $errorControllerClass = $this->getConfig('app.default.namespace') . 'Controller\\' . ucfirst($this->getConfig('app.default.errorContrller', 'error'));
             if (class_exists($errorControllerClass)) {
-                parent::$_route['controller'] = $this->getConfig('app.default.error_controller', 'error');
+                parent::$_route['controller'] = $this->getConfig('app.default.errorController', 'error');
                 parent::$_route['action'] = $this->getConfig('app.default.action', 'main');
                 $controller = new $errorControllerClass(parent::$_route['controller'], parent::$_route['action']);
             } else {
@@ -80,9 +80,9 @@ class Application extends Component
             $this->end(call_user_func_array([$controller, parent::$_route['action']], parent::$_route['params']));
         } else {
             header('HTTP/1.0 404 Not Found', true, 404);
-            $errorControllerClass = $this->getConfig('app.default.namespace') . 'Controller\\' . ucfirst($this->getConfig('app.default.error_controller', 'error'));
+            $errorControllerClass = $this->getConfig('app.default.namespace') . 'Controller\\' . ucfirst($this->getConfig('app.default.errorController', 'error'));
             if (class_exists($errorControllerClass)) {
-                parent::$_route['controller'] = $this->getConfig('app.default.error_controller', 'error');
+                parent::$_route['controller'] = $this->getConfig('app.default.errorController', 'error');
                 parent::$_route['action'] = $this->getConfig('app.default.action', 'main');
                 $controller = new $errorControllerClass(parent::$_route['controller'], parent::$_route['action']);
                 if (method_exists($controller, parent::$_route['action'])) {
