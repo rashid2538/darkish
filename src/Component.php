@@ -139,7 +139,7 @@ abstract class Component
 
         // base url
         $baseUrl = $this->getConfig('app.default.base', '/');
-        $baseUrl = $baseUrl ? "$baseUrl/" : '';
+        $baseUrl = ($baseUrl && $baseUrl != '/') ? "$baseUrl/" : '';
 
         // server port
         $port = $_SERVER['SERVER_PORT'];
