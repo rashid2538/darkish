@@ -36,14 +36,13 @@
 			$this->_action = $action;
 			$this->_viewBag = new \StdClass();
 			$this->path = $this->getApplication()->getConfig( 'app.view.directory', 'views/' );
-			$this->debug( 'Checking authorization', $this->getApplication()->isAuthorized() );
 			if( $this->_authorize ) {
 				$this->debug( 'checking authorization', $this->getApplication()->isAuthorized() );
 				if( !$this->getApplication()->isAuthorized() ) {
-					$this->redirect( $this->getApplication()->getConfig( 'defaults/loginPath', 'account/login' ) . '?next=' . urlencode( $_SERVER[ 'REQUEST_URI' ] ), true );
+					$this->redirect( $this->getApplication()->getConfig( 'app.loginPath', 'account/login' ) . '?next=' . urlencode( $_SERVER[ 'REQUEST_URI' ] ), true );
 				} else if( !empty( $this->_roles ) ) {
 					if( empty( array_intersect( $this->_roles, $this->getUserRoles() ) ) ) {
-						$this->redirect( $this->getApplication()->getConfig( 'defaults/loginPath', 'account/login' ) );
+						$this->redirect( $this->getApplication()->getConfig( 'app.loginPath', 'account/login' ) );
 					}
 				}
 			}
