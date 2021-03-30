@@ -198,7 +198,8 @@
 		}
 
 		function first() {
-			$this->_limit = '0, 1';
+			$this->_page = 1;
+			$this->_quantity = 1;
 			$result = $this->fetch();
 			return count( $result ) > 0 ? $result[ 0 ] : null;
 		}

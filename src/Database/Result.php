@@ -158,4 +158,12 @@
 			}
 			return $pages;
 		}
+
+		function map( $callback ) {
+			return array_map($callback, $this->_records);
+		}
+
+		function filter( $callback ) {
+			return array_filter($this->_records, $callback);
+		}
 	}
