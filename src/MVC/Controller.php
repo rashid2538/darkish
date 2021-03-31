@@ -157,6 +157,7 @@
 		}
 
 		function csrf( $justToken = false ) {
+			$this->startSession();
 			$_SESSION[ 'CSRF_TOKEN' ] = substr( str_shuffle( 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' ), 0, 20 );
 			return $justToken ? $_SESSION[ 'CSRF_TOKEN' ] : '<input type="hidden" name="CSRF_TOKEN" value="' . $_SESSION[ 'CSRF_TOKEN' ] . '" />';
 		}

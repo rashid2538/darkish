@@ -171,9 +171,20 @@ abstract class Component
 
     function getMessages()
     {
+        $this->startSession();
         $messages = isset($_SESSION['messages']) ? $_SESSION['messages'] : [];
         unset($_SESSION['messages']);
         return $messages;
+    }
+
+    function startSession() {
+        if(session_status() === PHP_SESSION_DISABLED) {
+            throw new \Exception('Sessions are disabled by server settings!');
+        }
+        if(session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+            session_regenerate_id();
+        }
     }
 
     function dummy()
@@ -183,6 +194,7 @@ abstract class Component
 
     function setMessage($message, $type = 'info')
     {
+        $this->startSession();
         $_SESSION['messages'][] = [
             'message' => $message,
             'type' => $type
@@ -217,6 +229,7 @@ abstract class Component
 
     function isValidCsrf()
     {
+        $this->startSession();
         return $_SESSION['CSRF_TOKEN'] == $_POST['CSRF_TOKEN'];
     }
 

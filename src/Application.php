@@ -16,8 +16,6 @@ class Application extends Component
     {
         $this->_requestStartTime = microtime(true);
         $this->trigger('start');
-        @session_start();
-        session_regenerate_id();
         $this->setDependency('db', function () {
             return Db::getInstance();
         });

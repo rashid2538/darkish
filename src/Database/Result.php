@@ -160,10 +160,10 @@
 		}
 
 		function map( $callback ) {
-			return array_map($callback, $this->_records);
+			return array_map($callback, $this->toArray());
 		}
 
 		function filter( $callback ) {
-			return array_filter($this->_records, $callback);
+			return array_filter($this->toArray(), $callback);
 		}
 	}
