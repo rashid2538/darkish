@@ -116,7 +116,8 @@ abstract class Component
         }
         $last = explode('/', $url);
         $last = end($last);
-        return $this->getHomePath() . $url . ((strpos($last, '.') !== false || $asItIs) ? '' : '/');
+        $finalUrl = $this->trigger('urlMapping', $this->getHomePath() . $url . ((strpos($last, '.') !== false || $asItIs) ? '' : '/'));
+        return $finalUrl;
     }
 
     protected function redirect($url, $asItIs = false)

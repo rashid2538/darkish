@@ -47,7 +47,7 @@
 			$this->_params = [];
 		}
 
-		function add( $record ) {
+		function record( $record ) {
 			return new Model( $this->_name, $record, $this->_context );
 		}
 
