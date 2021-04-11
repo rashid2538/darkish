@@ -122,7 +122,11 @@ abstract class Component
 
     protected function redirect($url, $asItIs = false)
     {
-        header('Location: ' . $this->url($url, $asItIs), true, 301);
+        if(strpos($url, '://') !== false ) {
+            header('Location: ' . $url, true, 301);
+        } else {
+            header('Location: ' . $this->url($url, $asItIs), true, 301);
+        }
         $this->response->setStatusCode(301);
         $this->getApplication()->end();
     }

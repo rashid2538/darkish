@@ -58,7 +58,7 @@
 				$this->_action = $options[ 'view' ];
 			}
 			$this->_action = strtolower( $this->_action );
-			$this->template = $this->getApplication()->getConfig( 'app.view.directory', 'views/' ) . $this->_name . '/' . $this->_action . '.' . $this->getConfig( 'app.view.extension', 'html' );
+			$this->template = (isset($options[ 'template' ]) ? $options[ 'template' ] : $this->getApplication()->getConfig( 'app.view.directory', 'views/' ) . $this->_name . '/' . $this->_action) . '.' . $this->getConfig( 'app.view.extension', 'html' );
 			$this->model = $model;
 			$this->html = new HTML( $model );
 			$renderer = $this->trigger( 'getRenderer' );
@@ -128,7 +128,7 @@
 				} else {
 					$filePath = rtrim(rtrim($_SERVER['DOCUMENT_ROOT'],'/'),'\\') . $base . '/assets/' . $styleSheet . '.css';
 					if(file_exists($filePath)) {
-						$result[] = '<link rel="stylesheet" href="' . $this->url('assets/') . $styleSheet . '.css?_h=' . md5_file($filePath) . '" />';
+						$result[] = '<link rel="stylesheet" href="' . $this->url('assets') . $styleSheet . '.css?_h=' . md5_file($filePath) . '" />';
 					} else {
 						$result[] = "<!-- CSS file '$filePath' not found! -->";
 					}
@@ -147,7 +147,7 @@
 				} else {
 					$filePath = rtrim(rtrim($_SERVER['DOCUMENT_ROOT'],'/'),'\\') . $base . '/assets/' . $script . '.js';
 					if( file_exists( $filePath ) ) {
-						$result[] = '<script src="' . $this->url('assets/') . $script . '.js?_h=' . md5_file($filePath) . '"></script>';
+						$result[] = '<script src="' . $this->url('assets') . $script . '.js?_h=' . md5_file($filePath) . '"></script>';
 					} else {
 						$result[] = "<!-- JS file '$filePath' not found! -->";
 					}
