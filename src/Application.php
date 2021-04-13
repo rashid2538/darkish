@@ -36,10 +36,13 @@ class Application extends Component
         register_shutdown_function([$this, 'checkError']);
     }
 
-    function checkError()
+    public function checkError()
     {
         $lastError = error_get_last();
-        if ($lastError) $this->debug($lastError);
+        if ($lastError) {
+            $this->debug($lastError);
+        }
+
     }
 
     public static function getInstance()
@@ -97,18 +100,21 @@ class Application extends Component
         return $this;
     }
 
-    function loadPlugins()
+    public function loadPlugins()
     {
         $plugins = explode(',', $this->getConfig('app.plugins'));
         if (!empty($plugins)) {
             foreach ($plugins as $pluginClass) {
-                if (class_exists($pluginClass)) $this->on('pluginsLoaded', [new $pluginClass(), 'activate']);
+                if (class_exists($pluginClass)) {
+                    $this->on('pluginsLoaded', [new $pluginClass(), 'activate']);
+                }
+
             }
         }
         $this->trigger('pluginsLoaded');
     }
 
-    function end($response = '')
+    public function end($response = '')
     {
         $this->response->prepare($this->request);
         $this->response->setCharset('UTF-8');

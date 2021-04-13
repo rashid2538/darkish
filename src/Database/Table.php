@@ -10,7 +10,7 @@ abstract class Table extends Component
 
     protected $_name;
 
-    function getTableName()
+    public function getTableName()
     {
         return $this->getConfig('db.prefix', '') . Helper::camelToUnderScore($this->_name);
     }

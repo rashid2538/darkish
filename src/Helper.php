@@ -5,12 +5,12 @@ namespace Darkish;
 abstract class Helper
 {
 
-    static function slugToCamel($str)
+    public static function slugToCamel($str)
     {
         return str_replace(' ', '', lcfirst(ucwords(str_replace('-', ' ', $str))));
     }
 
-    static function camelToUnderScore($str)
+    public static function camelToUnderScore($str)
     {
         $result = '';
         for ($i = 0; $i < strlen($str); $i++) {
@@ -20,10 +20,11 @@ abstract class Helper
         return $result;
     }
 
-    static function makeKeys( $arrOrObj, $column ) {
+    public static function makeKeys($arrOrObj, $column)
+    {
         $result = [];
-        foreach( $arrOrObj as $val ) {
-            $result[ is_array( $val ) ? $val[ $column ] : $val->$column ] = $val;
+        foreach ($arrOrObj as $val) {
+            $result[is_array($val) ? $val[$column] : $val->$column] = $val;
         }
         return $result;
     }

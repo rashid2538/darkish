@@ -14,31 +14,31 @@ abstract class Component
     protected static $_callbacks = [];
     protected static $_route = [];
 
-    function setDependency($name, $dependencyOrDependencyGetter)
+    public function setDependency($name, $dependencyOrDependencyGetter)
     {
         self::$_dependencies[$name] = $dependencyOrDependencyGetter;
         return $this;
     }
 
-    function setConfig($config)
+    public function setConfig($config)
     {
         self::$_config = is_string($config) && file_exists($config) ? parse_ini_file($config) : $config;
         $this->trigger('config_loaded');
         return $this;
     }
 
-    function mergeConfig($newConfig)
+    public function mergeConfig($newConfig)
     {
         self::$_config = array_merge(self::$_config, $newConfig);
         return $this;
     }
 
-    function getConfig($key, $default = null)
+    public function getConfig($key, $default = null)
     {
         return isset(self::$_config[$key]) ? self::$_config[$key] : $default;
     }
 
-    function on($event, $handler)
+    public function on($event, $handler)
     {
         if (is_callable($handler)) {
             if (!isset(self::$_eventHandlers[$event])) {
@@ -50,7 +50,7 @@ abstract class Component
         throw new \Exception('2nd argument should be a callable!');
     }
 
-    function trigger()
+    public function trigger()
     {
         $args = func_get_args();
         $result = isset($args[1]) ? $args[1] : null;
@@ -74,7 +74,7 @@ abstract class Component
         return $result;
     }
 
-    function debug()
+    public function debug()
     {
         if ($this->getConfig('app.debug', false) == 'true' || isset($_GET['debug'])) {
             $args = func_get_args();
@@ -85,7 +85,7 @@ abstract class Component
         }
     }
 
-    function getDependency($name)
+    public function getDependency($name)
     {
         if (isset(self::$_dependencies[$name])) {
             if (is_callable(self::$_dependencies[$name])) {
@@ -96,17 +96,17 @@ abstract class Component
         throw new \Exception('Unable to resolve dependency!');
     }
 
-    function __get($name)
+    public function __get($name)
     {
         return $this->getDependency($name);
     }
 
-    function getApplication()
+    public function getApplication()
     {
         return Application::getInstance();
     }
 
-    function url($url = '', $asItIs = false)
+    public function url($url = '', $asItIs = false)
     {
         if (empty($url)) {
             return $this->getHomePath();
@@ -122,7 +122,7 @@ abstract class Component
 
     protected function redirect($url, $asItIs = false)
     {
-        if(strpos($url, '://') !== false ) {
+        if (strpos($url, '://') !== false) {
             header('Location: ' . $url, true, 301);
         } else {
             header('Location: ' . $this->url($url, $asItIs), true, 301);
@@ -159,12 +159,12 @@ abstract class Component
         return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest' && isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], $this->getHomePath()) === 0;
     }
 
-    function __isset($prop)
+    public function __isset($prop)
     {
         return isset(self::$_dependencies[$prop]) || isset(self::$_callbacks[$prop]);
     }
 
-    function setCallback($name, $value)
+    public function setCallback($name, $value)
     {
         if (is_callable($value)) {
             self::$_callbacks[$name] = $value;
@@ -174,7 +174,7 @@ abstract class Component
         return $this;
     }
 
-    function getMessages()
+    public function getMessages()
     {
         $this->startSession();
         $messages = isset($_SESSION['messages']) ? $_SESSION['messages'] : [];
@@ -182,63 +182,64 @@ abstract class Component
         return $messages;
     }
 
-    function startSession() {
-        if(session_status() === PHP_SESSION_DISABLED) {
+    public function startSession()
+    {
+        if (session_status() === PHP_SESSION_DISABLED) {
             throw new \Exception('Sessions are disabled by server settings!');
         }
-        if(session_status() !== PHP_SESSION_ACTIVE) {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
             session_regenerate_id();
         }
     }
 
-    function dummy()
+    public function dummy()
     {
         return new Dummy();
     }
 
-    function setMessage($message, $type = 'info')
+    public function setMessage($message, $type = 'info')
     {
         $this->startSession();
         $_SESSION['messages'][] = [
             'message' => $message,
-            'type' => $type
+            'type' => $type,
         ];
         return $this;
     }
 
-    function getUser()
+    public function getUser()
     {
         try {
             $auth = $this->auth;
             return $auth ? $auth->getUser() : null;
-        } catch (\Exception $ex) {
+        } catch (\Exception$ex) {
             return null;
         }
     }
 
-    function getUserRoles()
+    public function getUserRoles()
     {
         try {
             $auth = $this->auth;
             return $auth ? $auth->getUserRoles() : null;
-        } catch (\Exception $ex) {
+        } catch (\Exception$ex) {
             return null;
         }
     }
 
-    function userHasRole($role)
+    public function userHasRole($role)
     {
         return in_array($role, $this->getUserRoles());
     }
 
-    function isValidCsrf()
+    public function isValidCsrf()
     {
         $this->startSession();
         return $_SESSION['CSRF_TOKEN'] == $_POST['CSRF_TOKEN'];
     }
 
-    function __call($func, $args)
+    public function __call($func, $args)
     {
         if (empty($args) && substr($func, 0, 3) == 'get') {
             $prop = '_' . lcfirst(substr($func, 3));
@@ -256,10 +257,11 @@ abstract class Component
         return !is_null($this->getUser());
     }
 
-    function sanitize( $data, $properties ) {
+    public function sanitize($data, $properties)
+    {
         $result = [];
-        foreach( $properties as $property ) {
-            $result[ $property ] = isset( $data[ $property ] ) ? ( empty( $data[ $property ] ) ? null : $data[ $property ] ) : null;
+        foreach ($properties as $property) {
+            $result[$property] = isset($data[$property]) ? (empty($data[$property]) ? null : $data[$property]) : null;
         }
         return $result;
     }

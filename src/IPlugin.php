@@ -1,7 +1,8 @@
 <?php
 
-	namespace Darkish;
+namespace Darkish;
 
-	interface IPlugin {
-		function activate();
-	}
+interface IPlugin
+{
+    function activate();
+}
