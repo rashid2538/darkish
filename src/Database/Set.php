@@ -4,9 +4,7 @@ namespace Darkish\Database;
 
 class Set extends Table
 {
-
     private $_context;
-
     private $_columns = '*';
     private $_where = [];
     private $_having = [];
@@ -41,7 +39,7 @@ class Set extends Table
         return $this;
     }
 
-    private function _reset()
+    public function reset()
     {
         $this->_columns = '*';
         $this->_where = [];
@@ -103,37 +101,37 @@ class Set extends Table
         $args = func_get_args();
         $numArgs = func_num_args();
         switch ($numArgs) {
-            case 0:{
-                    return $this;
-                }case 1:{
-                    $this->_having[] = $args[0];
-                    break;
-                }case 2:{
-                    $this->_having[] = "`$args[0]` = :$args[0]";
-                    $this->_params[":$args[0]"] = $args[1];
-                    break;
-                }default:{
-                    if (strtolower(trim($args[1])) == 'in') {
-                        $ins = [];
-                        $inArgs = is_array($args[2]) ? $args[2] : array_slice($args, 2);
-                        foreach ($inArgs as $i => $val) {
-                            $ins[] = ":{$args[0]}In$i";
-                            $this->_params[":{$args[0]}In$i"] = $val;
-                        }
-                        $this->_having[] = "`$args[0]` IN ( " . implode(', ', $ins) . ' )';
-                    } else if (strtolower(trim($args[1])) == 'between') {
-                        if ($numArgs != 4) {
-                            throw new \Exception('Between operator requires two operands!');
-                        }
-                        $this->_params[":{$args[0]}Between1"] = $args[2];
-                        $this->_params[":{$args[0]}Between2"] = $args[3];
-                        $this->_having[] = "`$args[0]` BETWEEN :{$args[0]}Between1 AND :{$args[0]}Between2";
-                    } else {
-                        $this->_having[] = "`$args[0]` $args[1] :$args[0]";
-                        $this->_params[":$args[0]"] = $args[2];
+            case 0:
+                return $this;
+            case 1:
+                $this->_having[] = $args[0];
+                break;
+            case 2:
+                $this->_having[] = "`$args[0]` = :$args[0]";
+                $this->_params[":$args[0]"] = $args[1];
+                break;
+            default:
+                if (strtolower(trim($args[1])) == 'in') {
+                    $ins = [];
+                    $inArgs = is_array($args[2]) ? $args[2] : array_slice($args, 2);
+                    foreach ($inArgs as $i => $val) {
+                        $ins[] = ":{$args[0]}In$i";
+                        $this->_params[":{$args[0]}In$i"] = $val;
                     }
-                    break;
+                    $this->_having[] = "`$args[0]` IN ( " . implode(', ', $ins) . ' )';
+                } else if (strtolower(trim($args[1])) == 'between') {
+                    if ($numArgs != 4) {
+                        throw new \Exception('Between operator requires two operands!');
+                    }
+                    $this->_params[":{$args[0]}Between1"] = $args[2];
+                    $this->_params[":{$args[0]}Between2"] = $args[3];
+                    $this->_having[] = "`$args[0]` BETWEEN :{$args[0]}Between1 AND :{$args[0]}Between2";
+                } else {
+                    $this->_having[] = "`$args[0]` $args[1] :$args[0]";
+                    $this->_params[":$args[0]"] = $args[2];
                 }
+                break;
+
         }
         return $this;
     }
@@ -202,8 +200,8 @@ class Set extends Table
         $result = $this->trigger('beforeSelect', $this, $this->_name);
         if ($result === false) {
             return new Result($this->_name, [], $this->_context, 0, 0, 1);
-        } else if (is_array($result) && isset($result['records']) && isset($result['totalCount'])) {
-            return new Result($this->_name, $result['records'], $this->_context, $result['totalCount'], $this->_quantity, $this->_page);
+        } else if (is_a($result, 'Darkish\\Database\\Result')) {
+            return $result;
         }
         if ($this->_totalCount === 0) {
             $this->_totalCount = null;
@@ -212,7 +210,7 @@ class Set extends Table
         $where = implode(' AND ', $this->_where);
         $table = $this->getTableName();
         $result = $this->_context->select($this->buildQuery(), $this->_params, $this->_name, $this->_totalCount, $this->_quantity, $this->_page);
-        $reset && $this->_reset();
+        // $reset && $this->reset();
         $this->trigger('afterSelect', $this, $this->_name, $result);
         return $result;
     }
