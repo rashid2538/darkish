@@ -105,6 +105,8 @@ class Db extends Component
     {
         if (!isset($this->_sets[$dbSetName])) {
             $this->_sets[$dbSetName] = new Set($dbSetName, $this);
+        } else {
+            $this->_sets[$dbSetName]->reset();
         }
         return $this->_sets[$dbSetName];
     }
@@ -143,7 +145,7 @@ class Db extends Component
         return $result;
     }
 
-    public function __call($name, $args)
+    public function call($name, ...$args)
     {
         return $this->query("CALL $name('" . implode("', '", $args) . "')")->fetchAll(\PDO::FETCH_ASSOC);
     }

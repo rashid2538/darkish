@@ -6,7 +6,6 @@ class Result extends Table implements \Iterator, \JsonSerializable, \ArrayAccess
 {
 
     private $_records = [];
-    private $_context;
     private $_position = 0;
     private $_totalCount = 0;
     private $_totalPages = 1;

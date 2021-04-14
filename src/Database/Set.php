@@ -4,7 +4,6 @@ namespace Darkish\Database;
 
 class Set extends Table
 {
-    private $_context;
     private $_columns = '*';
     private $_where = [];
     private $_having = [];
@@ -54,6 +53,10 @@ class Set extends Table
     public function record($record)
     {
         return new Model($this->_name, $record, $this->_context);
+    }
+
+    public function getParams() {
+        return $this->_params;
     }
 
     public function where()
@@ -201,6 +204,8 @@ class Set extends Table
         if ($result === false) {
             return new Result($this->_name, [], $this->_context, 0, 0, 1);
         } else if (is_a($result, 'Darkish\\Database\\Result')) {
+            $this->debug('DATABASE_CACHE_HIT', [$this->buildQuery(), $this->_params]);
+            $result->setContext($this->_context);
             return $result;
         }
         if ($this->_totalCount === 0) {

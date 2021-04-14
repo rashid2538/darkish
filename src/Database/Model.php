@@ -7,7 +7,6 @@ class Model extends Table implements \JsonSerializable, \ArrayAccess, \Serializa
 
     private $_record;
     private $_original;
-    private $_context;
     private $_error;
     private $_fkMaps = [];
     public $pk = 'id';
