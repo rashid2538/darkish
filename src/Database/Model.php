@@ -56,10 +56,16 @@ class Model extends Table implements \JsonSerializable, \ArrayAccess, \Serializa
             $prop = lcfirst(substr($name, 3));
             return $this->__get($prop);
         }
-        $callback = $this->trigger('getModelCallback', $this->_name, $name);
-        if(is_callable($callback)) {
-            return call_user_func_array($callback, $args);
+
+        $modelExtensionClass = $this->getConfig('app.default.namespace', 'App\\') . 'Model\\' . ucfirst($this->_name);
+        if(class_exists($modelExtensionClass)) {
+            $extensionObject = new $modelExtensionClass();
+            if(is_callable([$extensionObject, $name])) {
+                $closure = \Closure::fromCallable($extensionObject->$name())->bindTo($this);
+                return call_user_func_array($closure, $args);
+            }
         }
+
         return call_user_func_array('parent::__call', [$name, $args]);
     }
 
