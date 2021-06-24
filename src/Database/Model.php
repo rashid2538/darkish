@@ -56,6 +56,10 @@ class Model extends Table implements \JsonSerializable, \ArrayAccess, \Serializa
             $prop = lcfirst(substr($name, 3));
             return $this->__get($prop);
         }
+        $callback = $this->trigger('getModelCallback', $this->_name, $name);
+        if(is_callable($callback)) {
+            return call_user_func_array($callback, $args);
+        }
         return call_user_func_array('parent::__call', [$name, $args]);
     }
 
