@@ -8,6 +8,9 @@ use Darkish\Component;
 class Db extends Component
 {
 
+    /**
+     * Holds 
+     */
     private static $_instances = [];
     private $_connection;
     private $_lastInsertId;
@@ -80,20 +83,7 @@ class Db extends Component
     public function dispose()
     {
         self::$_instances[md5(serialize($this->_connectionString))] = null;
-    }
-
-    public function beat($fromSelf = false)
-    {
-        if ($this->_connection === null) {
-            $key = md5(serialize($this->_connectionString));
-            if ($fromSelf) {
-                $this->_connect();
-            } else if (self::$_instances[$key]->getConnection() == null) {
-                self::$_instances[$key]->beat(true);
-                $this->_connection = self::$_instances[$key]->getConnection();
-            }
-        }
-        return $this;
+        unset(self::$_instances[md5(serialize($this->_connectionString))]);
     }
 
     public function __destruct()
@@ -129,7 +119,7 @@ class Db extends Component
         $result = null;
         if (empty($params)) {
             $statement = $this->_connection->query($sql);
-            $this->trigger('queryExecuted', $sql, $params, $statement);
+            $this->trigger('queryExecuted', $sql, $statement);
             $result = strtolower(substr(trim($sql), 0, 7)) == 'select ' ? $statement->fetchAll(\PDO::FETCH_ASSOC) : $statement;
         } else {
             $statement = $this->_connection->prepare($sql);
@@ -147,6 +137,24 @@ class Db extends Component
 
     public function call($name, ...$args)
     {
-        return $this->query("CALL $name('" . implode("', '", $args) . "')")->fetchAll(\PDO::FETCH_ASSOC);
+        $placeHolders = [];
+        $params = [];
+        foreach($args as $i => $arg) {
+            $placeHolders[] = ":arg$i";
+            $params["arg$i"] = $arg;
+        }
+        $placeHolders = implode(', ', $placeHolders);
+        return $this->query("CALL $name($placeHolders)", $params)->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function __call($func, $args)
+    {
+        try {
+            $query = $this->query("SHOW CREATE PROCEDURE `$func`");
+        } catch(\Exception $ex) {
+            return parent::__call($func, $args);
+        }
+        array_unshift($args, $func);
+        return call_user_func_array([$this, 'call'], $args);
     }
 }

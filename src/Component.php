@@ -2,9 +2,6 @@
 
 namespace Darkish;
 
-use Darkish\Application;
-use Darkish\Helper;
-
 abstract class Component
 {
 
@@ -134,7 +131,7 @@ abstract class Component
     protected function getHomePath()
     {
         // server protocol
-        $protocol = empty($_SERVER['HTTPS']) ? 'http' : 'https';
+        $protocol = !isset($_SERVER['HTTPS']) || empty($_SERVER['HTTPS']) ? 'http' : 'https';
 
         // domain name
         $domain = $_SERVER['SERVER_NAME'];

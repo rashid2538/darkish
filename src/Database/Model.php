@@ -30,7 +30,6 @@ class Model extends Table implements \JsonSerializable, \ArrayAccess, \Serializa
         if (in_array($name, array_keys($this->_record))) {
             return $this->_record[$name];
         }
-        $this->_context->beat();
         if (isset($this->_fkMaps[$name])) {
             $dbSet = $this->_fkMaps[$name][0];
             return $this->_context->$dbSet->where('id', $this->_record[$this->_fkMaps[$name][1]]);
